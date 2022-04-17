@@ -7,6 +7,13 @@ webサイト(ブログ)
     * ブログのCRUD
 * アノニマスユーザー
     * ブログの閲覧
+```mermaid
+sequenceDiagram
+  actor User
+  User ->> ブログ: 
+  actor Admin
+  Admin ->> ブログ:　ログイン & 書き換え
+```
 
 # 環境
 Python_______
