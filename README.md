@@ -2,11 +2,13 @@
 webサイト(ブログ)
 
 # 要件定義
-* 管理者
+* 管理者ユーザー
     * ログイン, ログアウト
     * ブログのCRUD
 * アノニマスユーザー
     * ブログの閲覧
+
+  
 ```mermaid
 sequenceDiagram
   actor User
