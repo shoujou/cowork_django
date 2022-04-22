@@ -10,7 +10,7 @@ class Author(models.Model):
     name = models.CharField(_("name"), max_length=150)
     dob = models.DateField(_("date of birth"), auto_now=False, auto_now_add=False, blank=True)
     profile = models.TextField(_("profile"))
-    user = models.OneToOneField(to=get_user_model(), verbose_name=_(""), on_delete=models.CASCADE)
+    user = models.OneToOneField(to=get_user_model(), verbose_name=_("user"), on_delete=models.CASCADE)
 
     def __str__(self) -> str:
         return self.name

@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <div class="author-list">
+    <h2>Authors</h2>
+    {% if author_list %}
+      <ul>
+        {% for author in author_list %}
+          <li>
+            <h4>{{ author.name }}</h4>
+            <p>Date of Birth: {{ author.dob }}</p>
+            <p>{{ author.profile | linebreaks }}</p>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+    <p>There are no author.</p>
+    {% endif %}
+  </div>
+{% endblock content %}
