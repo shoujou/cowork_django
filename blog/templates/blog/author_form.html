@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <div class="author-form">
+    <div class="container">
+      <h1>Author Profile Settings</h1>
+      <p>Create a profile as a blog author!</p>
+      <form action="" method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit", value="Submit", class="btn btn-primary">
+      </form>
+    </div>
+  </div>
+{% endblock content %}

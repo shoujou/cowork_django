@@ -25,7 +25,12 @@
       <div class="collapse navbar-collapse" id="navbarNavDropdown">
         <ul class="navbar-nav mr-auto">
           <li class="navbar-item">
-            <a href="#">aaa</a>
+            {% if user.is_authenticated %}
+              <a href="/accounts/logout/">logout</a>
+            {% else %}
+              <a href="/accounts/register/">sign up</a>
+              <a href="/accounts/login/">log in</a>
+            {% endif %}
           </li>
           <li class="navbar-item">
             <a href="#">bbb</a>
