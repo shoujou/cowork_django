@@ -24,7 +24,9 @@ class Post(models.Model):
                                         auto_now=False, auto_now_add=False,
                                         default=timezone.now)
 
-    updated_date = models.DateTimeField(_("updated date"), auto_now=False, auto_now_add=False)
+    updated_date = models.DateTimeField(_("updated date"), 
+                                        auto_now=False, auto_now_add=False,
+                                        blank=True, null=True)
     author = models.ForeignKey(to=Author, verbose_name=_("author"), on_delete=models.CASCADE)
 
     class Meta:

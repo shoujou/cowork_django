@@ -17,6 +17,7 @@ from django.contrib import admin
 from django.urls import include, path
 from customauth.views import RegisterView
 
+
 urlpatterns = [
     path('blog/', include('blog.urls')),
     path('accounts/register/', RegisterView.as_view(), name="register"),
