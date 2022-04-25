@@ -20,3 +20,16 @@ sequenceDiagram
 # 環境
 Python_______
 django_______
+
+
+# 動かす際
+* python manage.py makemigration customauth
+* python manage.py makemigration blog
+* python manage.py migrate
+* python manage.py createsuperuser
+* python manage.py runserver
+
+# root url
+* blog/
+
+
