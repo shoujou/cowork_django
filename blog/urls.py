@@ -11,6 +11,8 @@ urlpatterns = [
     path('update/<uuid:pk>', views.PostUpdateView.as_view(), name='post-update'),
     path('delete/<uuid:pk>', views.PostDeleteView.as_view(), name='post-delete'),
     path('author/', views.AuthorListView.as_view(), name='author-list'),
+    path('author/detail/<int:pk>', views.AuthorDetailView.as_view(), name='author-detail'),
     path('author/create/', views.AuthorCreateView.as_view(), name="author-create"),
-    # path('author-detail:<int:pk>'),
+    path('author/update/<int:pk>', views.AuthorUpdateView.as_view(), name='author-update'),
+    path('author/delete/<int:pk>', views.AuthorDeleteView.as_view(), name='author-delete'),
 ]

@@ -13,6 +13,10 @@ class AuthorListView(generic.ListView):
     model = Author
 
 
+class AuthorDetailView(generic.DetailView):
+    model = Author
+
+
 class AuthorCreateView(LoginRequiredMixin, generic.CreateView):
     model = Author
     form_class = AuthorForm
@@ -33,16 +37,23 @@ class AuthorCreateView(LoginRequiredMixin, generic.CreateView):
         return super().form_valid(form)
 
 
-
 class AuthorUpdateView(LoginRequiredMixin, generic.UpdateView):
     model = Author
     form_class = AuthorForm
-    success_url = reverse_lazy("blog:author-detail")
 
     def form_valid(self, form):
         self.object = form.save(commit=False)
         self.object.user = self.request.user
         return super().form_valid(form)
+
+    def get_success_url(self) -> str:
+        self.success_url = reverse("blog:author-detail", kwargs={'pk': self.object.id})
+        return super().get_success_url()
+
+
+class AuthorDeleteView(LoginRequiredMixin, generic.DeleteView):
+    model = Author
+    success_url = reverse_lazy("blog:author-delete")
 
 
 class PostListView(generic.ListView):

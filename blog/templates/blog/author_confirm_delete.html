@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="author-delete">
+  <form action="" method="post" class="mt-5">
+    {% csrf_token %}
+    <p>Are you sure you want to remove this post ?</p>
+    <h4>{{ author.name }}</h4>
+    <p>Date of Birth: {{ author.dob }}</p>
+    <p>{{ author.profile | linebreaks }}</p>
+    <button type="submit" class="btn btn-danger" value="delete">Delete</button>
+  </form>
+</div>
+{% endblock content %}
