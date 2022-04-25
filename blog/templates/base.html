@@ -26,6 +26,7 @@
         <ul class="navbar-nav mr-auto">
           <li class="navbar-item">
             {% if user.is_authenticated %}
+              <p>User: {{ user }}</p>
               <a href="/accounts/logout/">logout</a>
             {% else %}
               <a href="/accounts/register/">sign up</a>
@@ -40,6 +41,11 @@
     </div>
   </nav>
   <div class="container mt-2">
+    {% for message in messages %}
+      <div {% if message.tags %} class="{{ message.tags }}"{% endif %}>
+        {{ message }}
+      </div>
+    {% endfor %}
     {% block content %}{% endblock content %}
   </div>
 </body>

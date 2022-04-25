@@ -5,13 +5,12 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from django.core.exceptions import ObjectDoesNotExist
 
-from .forms import AuthorForm
+from .forms import AuthorForm, PostForm
 from .models import Author, Post
 
 
 class AuthorListView(generic.ListView):
     model = Author
-    context_object_name = "author_list"
 
 
 class AuthorCreateView(LoginRequiredMixin, generic.CreateView):
@@ -22,6 +21,7 @@ class AuthorCreateView(LoginRequiredMixin, generic.CreateView):
     def get(self, request, *args, **kwargs):
         try:
             if (Author.objects.get(user=request.user)):
+                messages.warning(request, "You already have an author account.")
                 return redirect("blog:post-list")                
         except ObjectDoesNotExist:
             pass
@@ -39,13 +39,48 @@ class AuthorUpdateView(LoginRequiredMixin, generic.UpdateView):
     form_class = AuthorForm
     success_url = reverse_lazy("blog:author-detail")
 
-    def get_form(self, form_class):
-        if form_class is None:
-            form_class = self.get_form_class()
-        return form_class(user=self.request.user, **self.get_form_kwargs())
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        self.object.user = self.request.user
+        return super().form_valid(form)
+
 
 class PostListView(generic.ListView):
     model = Post
-    context_object_name = "post_list"
 
 
+class PostDetailView(generic.DetailView):
+    model = Post
+
+
+class PostCreateView(LoginRequiredMixin, generic.CreateView):
+    model = Post
+    form_class = PostForm
+
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        self.object.author = self.request.user.author
+        return super().form_valid(form)
+
+    def get_success_url(self) -> str:
+        self.success_url = reverse("blog:post-detail", kwargs={'pk': self.object.id})
+        return super().get_success_url()
+
+
+class PostUpdateView(LoginRequiredMixin, generic.UpdateView):
+    model = Post
+    form_class = PostForm
+
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        self.object.author = self.request.user.author
+        return super().form_valid(form)
+
+    def get_success_url(self) -> str:
+        self.success_url = reverse("blog:post-detail", kwargs={'pk': self.object.id})
+        return super().get_success_url()
+
+
+class PostDeleteView(LoginRequiredMixin, generic.DeleteView):
+    model = Post
+    success_url = reverse_lazy("blog:post-list")

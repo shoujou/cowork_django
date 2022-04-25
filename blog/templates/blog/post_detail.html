@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="post-detail">
+  <h4>{{ post.title }}</h4>
+  <p>{{ post.author }}</p>
+  <p>{{ post.body }}</p>
+  <p>{{ post.created_date }}</p>
+  <p>{{ post.updated_date }}</p>
+  
+</div>
+{% endblock content %}

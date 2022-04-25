@@ -1,6 +1,6 @@
 from django.forms import Form, ModelForm
 
-from .models import Author
+from .models import Author, Post
 
 
 class AuthorForm(ModelForm):
@@ -9,3 +9,7 @@ class AuthorForm(ModelForm):
         exclude = ("user",)
 
 
+class PostForm(ModelForm):
+    class Meta:
+        model = Post
+        exclude = ("author",)

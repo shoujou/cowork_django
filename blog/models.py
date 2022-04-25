@@ -30,7 +30,7 @@ class Post(models.Model):
     author = models.ForeignKey(to=Author, verbose_name=_("author"), on_delete=models.CASCADE)
 
     class Meta:
-        ordering = ["updated_date", "created_date"]
+        ordering = ["-updated_date", "-created_date"]
 
     def __str__(self) -> str:
         return "<Post:title=%s, author=%s>" % (self.title, self.author)

@@ -1,15 +1,13 @@
 {% extends 'base.html' %}
 
 {% block content %}
-  <div class="container mt-5">
-    {% if form.errors %}
-      <p>Your username and password didn't match. Please try again.</p>
-    {% endif %}
+  {% if form.errors %}
+    <p>Your username and password didn't match. Please try again.</p>
+  {% endif %}
 
-    <form method="post" action="{% url 'login' %}">
-      {% csrf_token %}
-      {{ form.as_p }}
-      <input type="submit" value="login" class="btn btn-primary">
-    </form>
-  </div>
+  <form method="post" action="{% url 'login' %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="login" class="btn btn-primary">
+  </form>
 {% endblock content %}

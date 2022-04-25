@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="post-delete">
+  <form action="" method="post" class="mt-5">
+    {% csrf_token %}
+    <p>Are you sure you want to remove this post ?</p>
+    <h4>{{ post.title }}</h4>
+    <p>{{ post.author }}</p>
+    <p>{{ post.body }}</p>
+    <p>{{ post.created_date }}</p>
+    {% if post.updated_date %}
+    <p>{{ post.updated_date }}</p>
+    {% endif %}
+    <button type="submit" class="btn btn-danger" value="delete">Delete</button>
+  </form>
+</div>
+{% endblock content %}
