@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h4>{{ author.name }}</h4>
+  <p>Date of Birth: {{ author.dob }}</p>
+  <p>{{ author.profile | linebreaks }}</p>
+  {% if user.is_authenticated and user == author.user %}
+    <a href="{% url 'blog:author-update' pk=author.pk %}" class="btn btn-sm btn-outline-secondary" role="button" aria-pressed="true">Edit</a>
+  {% endif %}
+{% endblock content %}

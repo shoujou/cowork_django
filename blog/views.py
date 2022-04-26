@@ -5,6 +5,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from django.core.exceptions import ObjectDoesNotExist
 
+from .mixins import EachUserPassesTestMixin, EachAuthorPassesTestMixin
 from .forms import AuthorForm, PostForm
 from .models import Author, Post
 
@@ -22,14 +23,14 @@ class AuthorCreateView(LoginRequiredMixin, generic.CreateView):
     form_class = AuthorForm
     success_url = reverse_lazy("blog:author-list")
 
-    def get(self, request, *args, **kwargs):
+    def dispatch(self, request, *args, **kwargs):
         try:
             if (Author.objects.get(user=request.user)):
                 messages.warning(request, "You already have an author account.")
                 return redirect("blog:post-list")                
         except ObjectDoesNotExist:
             pass
-        return super().get(request, *args, **kwargs)
+        return super().dispatch(request, *args, **kwargs)
     
     def form_valid(self, form):
         self.object = form.save(commit=False)
@@ -37,7 +38,9 @@ class AuthorCreateView(LoginRequiredMixin, generic.CreateView):
         return super().form_valid(form)
 
 
-class AuthorUpdateView(LoginRequiredMixin, generic.UpdateView):
+class AuthorUpdateView(LoginRequiredMixin, 
+                       EachUserPassesTestMixin,
+                       generic.UpdateView):
     model = Author
     form_class = AuthorForm
 
@@ -51,11 +54,6 @@ class AuthorUpdateView(LoginRequiredMixin, generic.UpdateView):
         return super().get_success_url()
 
 
-class AuthorDeleteView(LoginRequiredMixin, generic.DeleteView):
-    model = Author
-    success_url = reverse_lazy("blog:author-delete")
-
-
 class PostListView(generic.ListView):
     model = Post
 
@@ -64,7 +62,8 @@ class PostDetailView(generic.DetailView):
     model = Post
 
 
-class PostCreateView(LoginRequiredMixin, generic.CreateView):
+class PostCreateView(LoginRequiredMixin,
+                     generic.CreateView):
     model = Post
     form_class = PostForm
 
@@ -78,7 +77,9 @@ class PostCreateView(LoginRequiredMixin, generic.CreateView):
         return super().get_success_url()
 
 
-class PostUpdateView(LoginRequiredMixin, generic.UpdateView):
+class PostUpdateView(LoginRequiredMixin,
+                     EachAuthorPassesTestMixin,
+                     generic.UpdateView):
     model = Post
     form_class = PostForm
 
@@ -92,6 +93,8 @@ class PostUpdateView(LoginRequiredMixin, generic.UpdateView):
         return super().get_success_url()
 
 
-class PostDeleteView(LoginRequiredMixin, generic.DeleteView):
+class PostDeleteView(LoginRequiredMixin,
+                     EachAuthorPassesTestMixin,
+                     generic.DeleteView):
     model = Post
     success_url = reverse_lazy("blog:post-list")
