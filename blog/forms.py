@@ -1,15 +1,20 @@
-from django.forms import Form, ModelForm
+from django import forms
 
 from .models import Author, Post
 
 
-class AuthorForm(ModelForm):
+class AuthorForm(forms.ModelForm):
     class Meta:
         model = Author
         exclude = ("user",)
 
 
-class PostForm(ModelForm):
+class PostForm(forms.ModelForm):
     class Meta:
         model = Post
         exclude = ("author",)
+
+
+class PostSearchForm(forms.Form):
+    string = forms.CharField(max_length=100, required=True)
+

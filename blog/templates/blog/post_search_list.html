@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+<div class="post-search-list">
+  {% if post_search_list %}
+    <ul>
+      {% for post in post_search_list %}
+        <li>
+          <h4>{{ post.title }}</h4>
+          <p>{{ post.author }}</p>
+          <p>{{ post.body | linebreaks | truncatechars:50}}</p>
+          <p>{{ post.created_date }}</p>
+          <a href="{% url 'blog:post-detail' pk=post.pk %}" class="btn btn-sm btn-outline-primary" role="button" aria-pressed="true">View</a>
+          {% if user.is_authenticated and user.author == post.author %}
+            <a href="{% url 'blog:post-update' pk=post.pk %}" class="btn btn-sm btn-outline-secondary" role="button" aria-pressed="true">Edit</a>
+            <a href="{% url 'blog:post-delete' pk=post.pk %}" class="btn btn-sm btn-outline-danger" role="button" aria-pressed="true">delete</a>
+          {% endif %}
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+  <p>There are no post.</p>
+  {% endif %}
+
+</div>
+  
+{% endblock content %}

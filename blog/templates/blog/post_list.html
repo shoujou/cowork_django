@@ -2,6 +2,11 @@
 
 {% block content %}
   <div class="post-list">
+    <form action="" method="post" class="mt-2 mb-4">
+      {% csrf_token %}
+      {{ form }}
+      <input type="submit" value="search">
+    </form>
     <h2>Posts 
       <span>
       <a href="{% url 'blog:post-create' %}"

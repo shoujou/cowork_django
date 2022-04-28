@@ -4,9 +4,10 @@ from django.views import generic
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from django.core.exceptions import ObjectDoesNotExist
+from django.db.models import Q
 
 from .mixins import EachUserPassesTestMixin, EachAuthorPassesTestMixin
-from .forms import AuthorForm, PostForm
+from .forms import AuthorForm, PostForm, PostSearchForm
 from .models import Author, Post
 
 
@@ -54,8 +55,32 @@ class AuthorUpdateView(LoginRequiredMixin,
         return super().get_success_url()
 
 
-class PostListView(generic.ListView):
+class PostSearchListView(generic.ListView):
+    template_name = "blog/post_search_list.html"
+    context_object_name = "post_search_list"
+
+    def get_queryset(self):
+        self.queryset = Post.objects.filter(
+            Q(author__name__icontains=self.kwargs["string"])
+          | Q(title__icontains=self.kwargs["string"]) 
+          | Q(body__icontains=self.kwargs["string"])
+        )
+        return super().get_queryset()
+    
+
+class PostListView(generic.edit.FormMixin, generic.ListView):
     model = Post
+    form_class = PostSearchForm
+
+    def get_success_url(self) -> str:
+        return reverse("blog:post-search-list", kwargs={"string": self.get_form().data.get("string")})
+
+    def post(self, request, *args, **kwargs):
+        form = self.get_form()
+        if form.is_valid():
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
 
 
 class PostDetailView(generic.DetailView):
