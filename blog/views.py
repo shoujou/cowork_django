@@ -58,13 +58,10 @@ class AuthorUpdateView(LoginRequiredMixin,
 class PostSearchListView(generic.ListView):
     template_name = "blog/post_search_list.html"
     context_object_name = "post_search_list"
+    model = Post
 
     def get_queryset(self):
-        self.queryset = Post.objects.filter(
-            Q(author__name__icontains=self.kwargs["string"])
-          | Q(title__icontains=self.kwargs["string"]) 
-          | Q(body__icontains=self.kwargs["string"])
-        )
+        self.queryset = self.model.objects.search(key_string=self.kwargs["string"])
         return super().get_queryset()
     
 

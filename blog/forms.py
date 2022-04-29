@@ -16,5 +16,6 @@ class PostForm(forms.ModelForm):
 
 
 class PostSearchForm(forms.Form):
-    string = forms.CharField(max_length=100, required=True)
+    string = forms.CharField(max_length=100,
+                             help_text="",required=True)
 
