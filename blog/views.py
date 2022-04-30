@@ -2,11 +2,13 @@ from django.shortcuts import redirect
 from django.urls import reverse_lazy, reverse
 from django.views import generic
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib import messages
-from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q
 
-from .mixins import EachUserPassesTestMixin, EachAuthorPassesTestMixin
+from .mixins import (
+    AuthorMatchTestMixin, UserMatchTestMixin, 
+    HasAuthorAccountTestMixin,
+)
+
 from .forms import AuthorForm, PostForm, PostSearchForm
 from .models import Author, Post
 
@@ -19,19 +21,12 @@ class AuthorDetailView(generic.DetailView):
     model = Author
 
 
-class AuthorCreateView(LoginRequiredMixin, generic.CreateView):
+class AuthorCreateView(LoginRequiredMixin, 
+                       HasAuthorAccountTestMixin, 
+                       generic.CreateView):
     model = Author
     form_class = AuthorForm
     success_url = reverse_lazy("blog:author-list")
-
-    def dispatch(self, request, *args, **kwargs):
-        try:
-            if (Author.objects.get(user=request.user)):
-                messages.warning(request, "You already have an author account.")
-                return redirect("blog:post-list")                
-        except ObjectDoesNotExist:
-            pass
-        return super().dispatch(request, *args, **kwargs)
     
     def form_valid(self, form):
         self.object = form.save(commit=False)
@@ -40,7 +35,7 @@ class AuthorCreateView(LoginRequiredMixin, generic.CreateView):
 
 
 class AuthorUpdateView(LoginRequiredMixin, 
-                       EachUserPassesTestMixin,
+                       UserMatchTestMixin,
                        generic.UpdateView):
     model = Author
     form_class = AuthorForm
@@ -61,7 +56,7 @@ class PostSearchListView(generic.ListView):
     model = Post
 
     def get_queryset(self):
-        self.queryset = self.model.objects.search(key_string=self.kwargs["string"])
+        self.queryset = self.model.objects.search(key_string=self.kwargs["key_string"])
         return super().get_queryset()
 
 
@@ -71,7 +66,7 @@ class PostFromAuthorListView(generic.ListView):
     model = Post
 
     def get_queryset(self):
-        self.queryset = self.model.objects.get_from_author(author=self.kwargs["author_pk"])
+        self.queryset = self.model.objects.filter(author=self.kwargs["author_pk"])
         return super().get_queryset()
     
 
@@ -80,7 +75,9 @@ class PostListView(generic.edit.FormMixin, generic.ListView):
     form_class = PostSearchForm
 
     def get_success_url(self) -> str:
-        return reverse("blog:post-search-list", kwargs={"string": self.get_form().data.get("string")})
+        return reverse("blog:post-search-list", kwargs={
+            "key_string": self.get_form().data.get("key_string")
+        })
 
     def post(self, request, *args, **kwargs):
         form = self.get_form()
@@ -110,7 +107,7 @@ class PostCreateView(LoginRequiredMixin,
 
 
 class PostUpdateView(LoginRequiredMixin,
-                     EachAuthorPassesTestMixin,
+                     AuthorMatchTestMixin,
                      generic.UpdateView):
     model = Post
     form_class = PostForm
@@ -126,7 +123,7 @@ class PostUpdateView(LoginRequiredMixin,
 
 
 class PostDeleteView(LoginRequiredMixin,
-                     EachAuthorPassesTestMixin,
+                     AuthorMatchTestMixin,
                      generic.DeleteView):
     model = Post
     success_url = reverse_lazy("blog:post-list")
