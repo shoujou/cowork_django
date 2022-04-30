@@ -7,7 +7,7 @@
       <ul>
         {% for author in author_list %}
           <li>
-            <h4>{{ author.name }}</h4>
+            <h4><a href="{% url 'blog:posts-from-author' author_pk=author.pk %}">{{ author.name }}</a></h4>
             <p>Date of Birth: {{ author.dob }}</p>
             <p>{{ author.profile | linebreaks | truncatechars:50}}</p>
             <a href="{% url 'blog:author-detail' pk=author.pk %}" class="btn btn-sm btn-outline-primary" role="button" aria-pressed="true">View</a>

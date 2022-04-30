@@ -63,6 +63,16 @@ class PostSearchListView(generic.ListView):
     def get_queryset(self):
         self.queryset = self.model.objects.search(key_string=self.kwargs["string"])
         return super().get_queryset()
+
+
+class PostFromAuthorListView(generic.ListView):
+    template_name = "blog/posts_from_author.html"
+    context_object_name = "posts_from_author"
+    model = Post
+
+    def get_queryset(self):
+        self.queryset = self.model.objects.get_from_author(author=self.kwargs["author_pk"])
+        return super().get_queryset()
     
 
 class PostListView(generic.edit.FormMixin, generic.ListView):

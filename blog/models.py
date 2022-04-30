@@ -17,6 +17,9 @@ class Author(models.Model):
 
 
 class PostModelQuerySet(models.QuerySet):
+    def get_from_author(self, author):
+        return self.filter(author=author)
+
     def search(self, key_string):
         query_set = self
         if key_string is not None:
@@ -32,6 +35,9 @@ class PostModelQuerySet(models.QuerySet):
 class PostManager(models.Manager):
     def get_queryset(self):
         return PostModelQuerySet(self.model, using=self._db)
+
+    def get_from_author(self, author):
+        return self.get_queryset().get_from_author(author)
 
     def search(self, key_string):
         return self.get_queryset().search(key_string)
@@ -52,7 +58,7 @@ class Post(models.Model):
     objects = PostManager()
 
     class Meta:
-        ordering = ["-updated_date", "-created_date"]
+        ordering = ["-created_date", "-updated_date"]
 
     def __str__(self) -> str:
         return "<Post:title=%s, author=%s>" % (self.title, self.author)
