@@ -3,6 +3,7 @@
 {% block content %}
   <div class="post-list">
     <form action="" method="post" class="mt-2 mb-4">
+      {% csrf_token %}
       {{ form.key_string }}
       <input type="submit" value="search">
     </form>
